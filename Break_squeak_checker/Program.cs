@@ -18,10 +18,10 @@ namespace Break_squeak_checker
                 devices.Add(WaveIn.GetCapabilities(n).ProductName);
             }
 
-            DisplayWriter dw = new DisplayWriter();
+            //DisplayWriter dw = new DisplayWriter();
 
             VolCheck vc = new VolCheck();
-            vc.displayVolume += dw.WriteToConsole;
+            vc.displayVolume += DisplayWriter.WriteToConsole;
 
             Thread.Sleep(1000000);
 
@@ -64,7 +64,7 @@ namespace Break_squeak_checker
             if (sampleCount > 100)
             {
                 //Console.Write("\r{0}", Math.Max(maxValue, Math.Abs(minValue)) * 100);
-                VolArgs va = new VolArgs(String.Format("\r{0}", Math.Max(maxValue, Math.Abs(minValue)) * 100));
+                VolArgs va = new VolArgs(DisplayWriter.VolMeter(Math.Max(maxValue, Math.Abs(minValue))));
                 sampleCount = 0;
                 maxValue = 0f;
                 minValue = 0f;
@@ -76,11 +76,18 @@ namespace Break_squeak_checker
 
     }
 
-    public class DisplayWriter
+    static public class DisplayWriter
     {
-        public void WriteToConsole(object sender, VolArgs e)
+        public static void WriteToConsole(object sender, VolArgs e)
         {
-            Console.Write(e.Message);
+            Console.Clear();
+            Console.Write("\r" + e.Message);
+        }
+
+        public static string VolMeter(float rawVol)
+        {
+            int easyVol = (int)Math.Round(rawVol * 10, 0);
+            return new string('#', easyVol);
         }
     }
 
