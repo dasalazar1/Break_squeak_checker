@@ -18,10 +18,13 @@ namespace Break_squeak_checker
                 devices.Add(WaveIn.GetCapabilities(n).ProductName);
             }
 
-            //DisplayWriter dw = new DisplayWriter();
+            Console.CursorVisible = false;
 
-            VolCheck vc = new VolCheck();
+            VolCheck vc = new VolCheck(0,0);
             vc.displayVolume += DisplayWriter.WriteToConsole;
+
+            VolCheck vc2 = new VolCheck(2, 1);
+            vc2.displayVolume += DisplayWriter.WriteToConsole;
 
             Thread.Sleep(1000000);
 
@@ -33,16 +36,18 @@ namespace Break_squeak_checker
         float maxValue = 0f;
         float minValue = 0f;
         int sampleCount = 0;
+        int position = 0;
         WaveInEvent waveIn;
 
         public EventHandler<VolArgs> displayVolume;
 
-        public VolCheck()
+        public VolCheck(int devNum, int pos)
         {
             waveIn = new WaveInEvent();
-            waveIn.DeviceNumber = 0;
+            waveIn.DeviceNumber = devNum;
             waveIn.WaveFormat = new WaveFormat(44100, 1);
             waveIn.DataAvailable += OnDataAvailable;
+            position = pos;
             waveIn.StartRecording();
         }
 
@@ -64,7 +69,7 @@ namespace Break_squeak_checker
             if (sampleCount > 100)
             {
                 //Console.Write("\r{0}", Math.Max(maxValue, Math.Abs(minValue)) * 100);
-                VolArgs va = new VolArgs(DisplayWriter.VolMeter(Math.Max(maxValue, Math.Abs(minValue))));
+                VolArgs va = new VolArgs(DisplayWriter.VolMeter(Math.Max(maxValue, Math.Abs(minValue))), position);
                 sampleCount = 0;
                 maxValue = 0f;
                 minValue = 0f;
@@ -80,7 +85,8 @@ namespace Break_squeak_checker
     {
         public static void WriteToConsole(object sender, VolArgs e)
         {
-            Console.Clear();
+            Console.SetCursorPosition(0, e.Position);
+            Console.Write(new String(' ', 10));
             Console.Write("\r" + e.Message);
         }
 
@@ -93,15 +99,21 @@ namespace Break_squeak_checker
 
     public class VolArgs : EventArgs
     {
-        public VolArgs(string str)
+        public VolArgs(string str, int pos)
         {
             msg = str;
+            position = pos;
         }
 
         private string msg;
+        private int position; 
         public string Message
         {
             get { return msg; }
+        }
+        public int Position
+        {
+            get { return position;  }
         }
     }
 
