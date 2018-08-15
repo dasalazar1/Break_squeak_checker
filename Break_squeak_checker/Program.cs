@@ -61,15 +61,15 @@ namespace Break_squeak_checker
             int.TryParse(userInput, out deviceInput); 
             driverFront = new VolCheck(deviceInput, "DF");
 
-            Console.WriteLine("Mic for passenger front well: ");
-            userInput = Console.ReadLine();
-            int.TryParse(userInput, out deviceInput);
-            passengerFront = new VolCheck(deviceInput, "PF");
-
             Console.WriteLine("Mic for driver rear well: ");
             userInput = Console.ReadLine();
             int.TryParse(userInput, out deviceInput);
             driverRear = new VolCheck(deviceInput, "DR");
+
+            Console.WriteLine("Mic for passenger front well: ");
+            userInput = Console.ReadLine();
+            int.TryParse(userInput, out deviceInput);
+            passengerFront = new VolCheck(deviceInput, "PF");
 
             Console.WriteLine("Mic for passenger rear well: ");
             userInput = Console.ReadLine();
